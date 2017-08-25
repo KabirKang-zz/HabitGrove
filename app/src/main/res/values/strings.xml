@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">HabitGrove</string>
+    <string name="title_habit_detail">Habit Detail</string>
+</resources>
