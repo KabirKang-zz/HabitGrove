@@ -15,4 +15,9 @@
     <string name="spinner_prompt">Reset to zero every</string>
 
     <string name="empty_title_toast">Enter title</string>
+
+    <string name="sign_in_success">You\'ve successfully signed in.</string>
+    <string name="sign_in_canceled">Sign in canceled</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="sign_out_prompt">Are you sure you want to sign out?</string>
 </resources>

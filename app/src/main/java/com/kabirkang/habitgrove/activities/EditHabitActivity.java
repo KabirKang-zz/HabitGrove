@@ -25,8 +25,10 @@ import com.kabirkang.habitgrove.models.ReminderTime;
 import com.kabirkang.habitgrove.models.ResetFrequency;
 import com.kabirkang.habitgrove.pickers.TimePickerFragment;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -143,7 +145,7 @@ public class EditHabitActivity extends AppCompatActivity implements TimePickerFr
     }
 
     private void createNew() {
-        checkInput();
+        if (!isInputCorrect()) return;
 
         long now = System.currentTimeMillis();
         String userId = "Kc1E6kPynflmh34hvmJ";
@@ -159,18 +161,26 @@ public class EditHabitActivity extends AppCompatActivity implements TimePickerFr
             }
         }
         int score = 0;
+        final int count = 5;
+        List<Long> checkmarks = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < count; i++) {
+            checkmarks.add(now + random.nextInt(100));
+        }
 
         HabitRecord habit = new HabitRecord(userId, now, name, mSelectedColor, target,
                 mResetFrequency.getTypeName(), now, mReminderTime.getHour(),
-                mReminderTime.getMinutes(), score, null);
+                mReminderTime.getMinutes(), score, checkmarks);
         mHabitsDatabaseReference.push().setValue(habit);
         onBackPressed();
     }
 
-    private void checkInput() {
+    private boolean isInputCorrect() {
         String name = habitTitleEditText.getText().toString();
         if (TextUtils.isEmpty(name)) {
             Toast.makeText(this, R.string.empty_title_toast, Toast.LENGTH_SHORT).show();
+            return false;
         }
+        return true;
     }
 }
