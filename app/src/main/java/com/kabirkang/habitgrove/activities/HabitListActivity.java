@@ -25,6 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.kabirkang.habitgrove.models.Habit;
 import com.kabirkang.habitgrove.models.HabitRecord;
 import com.kabirkang.habitgrove.utils.FirebaseUtils;
 import com.kabirkang.habitgrove.view.GridSpacing;
@@ -145,15 +146,13 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
     }
 
     @Override
-    public void onClick(int position) {
-        Log.d(TAG, "Select item at position: " + position);
+    public void onClick(Habit habit, int position) {
+        showDetail(habit);
     }
 
     @OnClick(R.id.fab)
     void onAddClick() {
-        if (mFirebaseAuth.getCurrentUser() != null) {
-            startActivity(new Intent(HabitListActivity.this, EditHabitActivity.class));
-        }
+        createHabit();
     }
 
     private void initializeFirebase() {
@@ -213,12 +212,15 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
         mValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<HabitRecord> records = new ArrayList<>((int) dataSnapshot.getChildrenCount());
+                List<Habit> habits = new ArrayList<>((int) dataSnapshot.getChildrenCount());
+
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    records.add(data.getValue(HabitRecord.class));
+                    HabitRecord parsedRecord = data.getValue(HabitRecord.class);
+                    habits.add(new Habit(data.getKey(), parsedRecord));
+
                 }
                 hideProgressIndicator();
-                mHabitsAdapter.setHabitRecords(records);
+                mHabitsAdapter.setHabits(habits);
             }
 
             @Override
@@ -245,6 +247,18 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
 
     private void hideProgressIndicator() {
         progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    private void showDetail(Habit habit) {
+        Intent intent = new Intent(this, HabitDetailActivity.class);
+        intent.putExtra(HabitDetailActivity.HABIT_EXTRA_KEY, habit);
+        startActivity(intent);
+    }
+
+    private void createHabit() {
+        if (mFirebaseAuth.getCurrentUser() != null) {
+            startActivity(new Intent(this, EditHabitActivity.class));
+        }
     }
 
 }

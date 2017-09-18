@@ -91,7 +91,7 @@ public class EditHabitActivity extends AppCompatActivity implements TimePickerFr
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(R.string.create_activity);
+            actionBar.setTitle(R.string.create_activity_label);
         }
 
         ButterKnife.bind(this);

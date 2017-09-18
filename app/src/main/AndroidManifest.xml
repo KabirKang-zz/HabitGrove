@@ -26,6 +26,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.HabitListActivity" />
         </activity>
+        <activity
+            android:name=".activities.HabitDetailActivity"
+            android:label="@string/detail_activity_label"
+            android:parentActivityName=".activities.HabitListActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.HabitListActivity" />
+        </activity>
     </application>
 
 </manifest>

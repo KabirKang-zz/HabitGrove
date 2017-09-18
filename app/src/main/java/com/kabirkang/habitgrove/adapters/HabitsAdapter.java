@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.kabirkang.habitgrove.R;
+import com.kabirkang.habitgrove.models.Habit;
 import com.kabirkang.habitgrove.models.HabitRecord;
 import com.kabirkang.habitgrove.view.HabitListItem;
 
@@ -19,45 +20,34 @@ import butterknife.ButterKnife;
 
 public final class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitAdapterViewHolder> {
 
-    /**
-     * The interface that receives onClick messages.
-     */
     public interface HabitAdapterOnClickListener {
-        /**
-         * @param position Index of the selected item.
-         */
-        void onClick(int position);
+
+        void onClick(Habit habit, int position);
     }
 
-    private List<HabitRecord> mHabitRecords;
+    private List<Habit> mHabits;
     private HabitAdapterOnClickListener mClickListener;
 
     public HabitsAdapter() {
-        this.mHabitRecords = new ArrayList<>();
+        this.mHabits = new ArrayList<>();
     }
 
-    /**
-     * Creates a HabitsAdapter.
-     * @param habitRecords  The data source.
-     * @param clickListener The on-click handler for this adapter. This single handler is called
-     *                      when an item is clicked.
-     */
-    public HabitsAdapter(List<HabitRecord> habitRecords, HabitAdapterOnClickListener clickListener) {
-        this.mHabitRecords = habitRecords;
+    public HabitsAdapter(List<Habit> habits, HabitAdapterOnClickListener clickListener) {
+        this.mHabits = habits;
         this.mClickListener = clickListener;
     }
 
-    public void setHabitRecords(List<HabitRecord> habitRecords) {
-        if (habitRecords == null) {
-            this.mHabitRecords.clear();
+    public void setHabits(List<Habit> habits) {
+        if (habits == null) {
+            this.mHabits.clear();
         } else {
-            this.mHabitRecords = habitRecords;
+            this.mHabits = habits;
         }
         notifyDataSetChanged();
     }
 
-    public List<HabitRecord> getHabitRecords() {
-        return mHabitRecords;
+    public List<Habit> getHabits() {
+        return mHabits;
     }
 
     public void setClickListener(HabitAdapterOnClickListener onClickListener) {
@@ -65,12 +55,12 @@ public final class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.Habi
     }
 
     public void clear() {
-        mHabitRecords.clear();
+        mHabits.clear();
         notifyDataSetChanged();
     }
 
-    public void add(HabitRecord habitRecord) {
-        mHabitRecords.add(habitRecord);
+    public void add(Habit habit) {
+        mHabits.add(habit);
         notifyDataSetChanged();
     }
 
@@ -89,12 +79,9 @@ public final class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.Habi
 
     @Override
     public int getItemCount() {
-        return mHabitRecords.size();
+        return mHabits.size();
     }
 
-    /**
-     * Cache of the children views for a forecast list item.
-     */
     class HabitAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.list_item_habit_title)
@@ -116,12 +103,15 @@ public final class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.Habi
 
         @Override
         public void onClick(View v) {
-            int position = getAdapterPosition();
-            if (mClickListener != null) mClickListener.onClick(position);
+            if (mClickListener != null) {
+                int position = getAdapterPosition();
+                Habit selectedHabit = mHabits.get(position);
+                mClickListener.onClick(selectedHabit, position);
+            }
         }
 
         private void bindAtPosition(int position) {
-            mViewModel.setHabitRecord(mHabitRecords.get(position));
+            mViewModel.setHabit(mHabits.get(position));
 
             if (itemView instanceof CardView) {
                 ((CardView) itemView).setCardBackgroundColor(mViewModel.getBackgroundColor());
