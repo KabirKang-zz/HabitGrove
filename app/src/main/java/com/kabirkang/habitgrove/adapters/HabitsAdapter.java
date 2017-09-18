@@ -1,5 +1,6 @@
 package com.kabirkang.habitgrove.adapters;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -122,7 +123,11 @@ public final class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.Habi
         private void bindAtPosition(int position) {
             mViewModel.setHabitRecord(mHabitRecords.get(position));
 
-            itemView.setBackgroundColor(mViewModel.getBackgroundColor());
+            if (itemView instanceof CardView) {
+                ((CardView) itemView).setCardBackgroundColor(mViewModel.getBackgroundColor());
+            } else {
+                itemView.setBackgroundColor(mViewModel.getBackgroundColor());
+            }
             nameTextView.setText(mViewModel.getHabitName());
             resetPeriodTextView.setText(mViewModel.getResetFreq());
             countTextView.setText(mViewModel.getScore());
