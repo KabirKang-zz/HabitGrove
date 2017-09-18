@@ -7,6 +7,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.kabirkang.habitgrove.R;
+import com.kabirkang.habitgrove.models.HabitRecord;
+import com.kabirkang.habitgrove.view.HabitListItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,16 +28,49 @@ public final class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.Habi
         void onClick(int position);
     }
 
+    private List<HabitRecord> mHabitRecords;
     private HabitAdapterOnClickListener mClickListener;
+
+    public HabitsAdapter() {
+        this.mHabitRecords = new ArrayList<>();
+    }
 
     /**
      * Creates a HabitsAdapter.
-     *
+     * @param habitRecords  The data source.
      * @param clickListener The on-click handler for this adapter. This single handler is called
      *                      when an item is clicked.
      */
-    public HabitsAdapter(HabitAdapterOnClickListener clickListener) {
+    public HabitsAdapter(List<HabitRecord> habitRecords, HabitAdapterOnClickListener clickListener) {
+        this.mHabitRecords = habitRecords;
         this.mClickListener = clickListener;
+    }
+
+    public void setHabitRecords(List<HabitRecord> habitRecords) {
+        if (habitRecords == null) {
+            this.mHabitRecords.clear();
+        } else {
+            this.mHabitRecords = habitRecords;
+        }
+        notifyDataSetChanged();
+    }
+
+    public List<HabitRecord> getHabitRecords() {
+        return mHabitRecords;
+    }
+
+    public void setClickListener(HabitAdapterOnClickListener onClickListener) {
+        this.mClickListener = onClickListener;
+    }
+
+    public void clear() {
+        mHabitRecords.clear();
+        notifyDataSetChanged();
+    }
+
+    public void add(HabitRecord habitRecord) {
+        mHabitRecords.add(habitRecord);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -50,7 +88,7 @@ public final class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.Habi
 
     @Override
     public int getItemCount() {
-        return 10;
+        return mHabitRecords.size();
     }
 
     /**
@@ -58,19 +96,21 @@ public final class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.Habi
      */
     class HabitAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.tv_list_item_habit_title)
+        @BindView(R.id.list_item_habit_title)
         TextView nameTextView;
 
-        @BindView(R.id.tv_list_item_reset_period)
+        @BindView(R.id.list_item_reset_period)
         TextView resetPeriodTextView;
 
-        @BindView(R.id.tv_list_item_count)
+        @BindView(R.id.list_item_count)
         TextView countTextView;
+
+        private HabitListItem mViewModel;
 
         HabitAdapterViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(this);
+            mViewModel = new HabitListItem(itemView.getContext());
         }
 
         @Override
@@ -80,12 +120,12 @@ public final class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.Habi
         }
 
         private void bindAtPosition(int position) {
-            String title = (position % 2 == 0 ? "Read" : "Gym");
-            String resetAt = (position % 2 == 0 ? "Today" : "This week");
+            mViewModel.setHabitRecord(mHabitRecords.get(position));
 
-            nameTextView.setText(title);
-            resetPeriodTextView.setText(resetAt);
-            countTextView.setText(String.valueOf(position));
+            itemView.setBackgroundColor(mViewModel.getBackgroundColor());
+            nameTextView.setText(mViewModel.getHabitName());
+            resetPeriodTextView.setText(mViewModel.getResetFreq());
+            countTextView.setText(mViewModel.getScore());
         }
     }
 

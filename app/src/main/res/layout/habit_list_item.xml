@@ -24,7 +24,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_list_item_habit_title"
+            android:id="@+id/list_item_habit_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -37,7 +37,7 @@
             tools:text="Read 10 minutes" />
 
         <TextView
-            android:id="@+id/tv_list_item_reset_period"
+            android:id="@+id/list_item_reset_period"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -48,7 +48,7 @@
             tools:text="today" />
 
         <TextView
-            android:id="@+id/tv_list_item_count"
+            android:id="@+id/list_item_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

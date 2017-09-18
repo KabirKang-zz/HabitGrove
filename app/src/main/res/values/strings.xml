@@ -20,4 +20,12 @@
     <string name="sign_in_canceled">Sign in canceled</string>
     <string name="sign_out">Sign Out</string>
     <string name="sign_out_prompt">Are you sure you want to sign out?</string>
+
+    <string name="failed_target_toast">Try another target</string>
+    <string name="empty_target_toast">Please enter target</string>
+
+    <string name="list_item_reset_today">Today</string>
+    <string name="list_item_reset_frequency">This %1$s</string>
+    <string name="list_item_reset_never">Since %1$s</string>
+
 </resources>

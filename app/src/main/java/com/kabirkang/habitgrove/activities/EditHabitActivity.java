@@ -17,6 +17,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kabirkang.habitgrove.R;
@@ -38,6 +40,8 @@ import petrov.kristiyan.colorpicker.ColorPicker;
 public class EditHabitActivity extends AppCompatActivity implements TimePickerFragment.OnTimeSetListener {
 
     private static final String TAG = "EditHabitActivity";
+
+    private static final int TARGET_FAILED_NUMBER = -1;
 
     @BindView(R.id.habit_title)
     EditText habitTitleEditText;
@@ -85,13 +89,12 @@ public class EditHabitActivity extends AppCompatActivity implements TimePickerFr
     private void configure() {
         setContentView(R.layout.activity_edit_habit);
 
-        ButterKnife.bind(this);
-
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(R.string.create_activity);
         }
 
+        ButterKnife.bind(this);
         initializeFirebase();
 
         List<String> resetFrequencies = Arrays.asList(ResetFrequency.ALL);
@@ -145,32 +148,22 @@ public class EditHabitActivity extends AppCompatActivity implements TimePickerFr
     }
 
     private void createNew() {
-        if (!isInputCorrect()) return;
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null || !isInputCorrect()) return;
 
-        long now = System.currentTimeMillis();
-        String userId = "Kc1E6kPynflmh34hvmJ";
-        String name = habitTitleEditText.getText().toString().trim();
 
-        String targetString = targetEditText.getText().toString().trim();
-        int target = 0;
-        if (!TextUtils.isEmpty(targetString)) {
-            try {
-                target = Integer.parseInt(targetString);
-            } catch (NumberFormatException e) {
-                Log.d(TAG, "Failed to parse target value");
-            }
-        }
-        int score = 0;
-        final int count = 5;
-        List<Long> checkmarks = new ArrayList<>();
-        Random random = new Random();
-        for (int i = 0; i < count; i++) {
-            checkmarks.add(now + random.nextInt(100));
-        }
+        final long now = System.currentTimeMillis();
+        final String userId = currentUser.getUid();
+        final String name = habitTitleEditText.getText().toString().trim();
+        final int score = 0;
+
+        int target = getTargetValue();
+        if (target == TARGET_FAILED_NUMBER) return;
+
 
         HabitRecord habit = new HabitRecord(userId, now, name, mSelectedColor, target,
                 mResetFrequency.getTypeName(), now, mReminderTime.getHour(),
-                mReminderTime.getMinutes(), score, checkmarks);
+                mReminderTime.getMinutes(), score, null);
         mHabitsDatabaseReference.push().setValue(habit);
         onBackPressed();
     }
@@ -181,6 +174,23 @@ public class EditHabitActivity extends AppCompatActivity implements TimePickerFr
             Toast.makeText(this, R.string.empty_title_toast, Toast.LENGTH_SHORT).show();
             return false;
         }
+
+        String targetString = targetEditText.getText().toString().trim();
+        if (TextUtils.isEmpty(targetString)) {
+            Toast.makeText(this, R.string.empty_target_toast, Toast.LENGTH_LONG).show();
+            return false;
+        }
         return true;
+    }
+
+    private int getTargetValue() {
+        String targetString = targetEditText.getText().toString().trim();
+        try {
+            return Integer.parseInt(targetString);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, R.string.failed_target_toast, Toast.LENGTH_LONG).show();
+            targetEditText.requestFocus();
+            return TARGET_FAILED_NUMBER;
+        }
     }
 }
