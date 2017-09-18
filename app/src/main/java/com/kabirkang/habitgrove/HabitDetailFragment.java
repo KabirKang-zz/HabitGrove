@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.kabirkang.habitgrove.dummy.DummyContent;
+import com.kabirkang.habitgrove.activities.HabitListActivity;
 
 /**
  * A fragment representing a single Habit detail screen.
@@ -27,7 +27,6 @@ public class HabitDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
-    private DummyContent.DummyItem mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -44,12 +43,10 @@ public class HabitDetailFragment extends Fragment {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.content);
             }
         }
     }
@@ -60,9 +57,6 @@ public class HabitDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.habit_detail, container, false);
 
         // Show the dummy content as text in a TextView.
-        if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.habit_detail)).setText(mItem.details);
-        }
 
         return rootView;
     }
