@@ -20,14 +20,13 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.kabirkang.habitgrove.models.Habit;
 import com.kabirkang.habitgrove.models.HabitRecord;
-import com.kabirkang.habitgrove.utils.FirebaseUtils;
+import com.kabirkang.habitgrove.sync.FirebaseUtils;
 import com.kabirkang.habitgrove.view.GridSpacing;
 import com.kabirkang.habitgrove.adapters.HabitsAdapter;
 import com.kabirkang.habitgrove.R;

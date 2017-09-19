@@ -2,6 +2,7 @@
     <string name="app_name">HabitGrove</string>
     <string name="create_activity_label">Create</string>
     <string name="detail_activity_label">Detail</string>
+    <string name="edit_activity_label">Edit</string>
     <string name="settings_action">Settings</string>
     <string name="save_action">Save</string>
     <string name="edit_action">Edit</string>

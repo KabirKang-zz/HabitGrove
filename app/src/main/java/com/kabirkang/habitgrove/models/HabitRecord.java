@@ -1,5 +1,6 @@
 package com.kabirkang.habitgrove.models;
 
+import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class HabitRecord implements Parcelable {
+    public static final int REMINDER_OFF = -1;
+    public static final int DEFAULT_COLOR = Color.WHITE;
 
     private String userId;
     private long createdAt;
@@ -21,6 +24,17 @@ public final class HabitRecord implements Parcelable {
     private List<Long> checkmarks;
 
     public HabitRecord() {
+        long now = System.currentTimeMillis();
+        this.createdAt = now;
+        this.name = "";
+        this.color = DEFAULT_COLOR;
+        this.target = 0;
+        this.resetFreq = ResetFrequency.NEVER;
+        this.resetTimestamp = now;
+        this.reminderHour = REMINDER_OFF;
+        this.reminderMin = REMINDER_OFF;
+        this.score = 0;
+        this.checkmarks = new ArrayList<>();
     }
 
     public HabitRecord(String userId, long createdAt, String name, int color, int target,
@@ -85,6 +99,11 @@ public final class HabitRecord implements Parcelable {
             return new HabitRecord[size];
         }
     };
+
+    public HabitRecord copy() {
+        return new HabitRecord(userId, createdAt, name, color, target, resetFreq, resetTimestamp,
+                reminderHour, reminderMin, score, checkmarks);
+    }
 
     public String getUserId() {
         return userId;
@@ -172,6 +191,23 @@ public final class HabitRecord implements Parcelable {
 
     public void setCheckmarks(List<Long> checkmarks) {
         this.checkmarks = checkmarks;
+    }
+
+    @Override
+    public String toString() {
+        return "HabitRecord{" +
+                "userId='" + userId + '\'' +
+                ", createdAt=" + createdAt +
+                ", name='" + name + '\'' +
+                ", color=" + color +
+                ", target=" + target +
+                ", resetFreq='" + resetFreq + '\'' +
+                ", resetTimestamp=" + resetTimestamp +
+                ", reminderHour=" + reminderHour +
+                ", reminderMin=" + reminderMin +
+                ", score=" + score +
+                ", checkmarks=" + checkmarks +
+                '}';
     }
 
 }

@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.kabirkang.habitgrove.R;
 import com.kabirkang.habitgrove.models.Habit;
@@ -17,7 +19,8 @@ public class HabitDetailActivity extends AppCompatActivity {
 
     public static final String HABIT_EXTRA_KEY = "com.kabirkang.habitgrove.activities.habit";
 
-    private static final String TAG = "DetailHabitActivity";
+    private static final String TAG = "HabitDetailActivity";
+    private static final int RC_EDIT_HABIT = 1991;
 
     private Habit mHabit;
 
@@ -46,6 +49,17 @@ public class HabitDetailActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RC_EDIT_HABIT && resultCode == RESULT_OK) {
+            Habit changedHabit = data.getParcelableExtra(EditHabitActivity.EDIT_HABIT_RESULT);
+            Log.d(TAG, "Change: " + changedHabit);
+            Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     private void configure() {
         setContentView(R.layout.activity_habit_detail);
         ButterKnife.bind(this);
@@ -68,7 +82,9 @@ public class HabitDetailActivity extends AppCompatActivity {
     }
 
     private void editHabit() {
-        startActivity(new Intent(this, EditHabitActivity.class));
+        Intent intent = new Intent(this, EditHabitActivity.class);
+        intent.putExtra(EditHabitActivity.EDIT_HABIT_EXTRA_KEY, mHabit);
+        startActivityForResult(intent, RC_EDIT_HABIT);
     }
 
 }

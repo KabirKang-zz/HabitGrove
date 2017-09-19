@@ -2,7 +2,7 @@ package com.kabirkang.habitgrove.app;
 
 import android.app.Application;
 
-import com.kabirkang.habitgrove.utils.FirebaseUtils;
+import com.kabirkang.habitgrove.sync.FirebaseUtils;
 
 public class MainApplication extends Application {
 
