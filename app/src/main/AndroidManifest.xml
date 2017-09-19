@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kabirkang.habitgrove">
-
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <application
         android:name=".app.MainApplication"
         android:allowBackup="true"
@@ -35,6 +35,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.HabitListActivity" />
         </activity>
+        <receiver
+            android:name=".receivers.ReminderReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <service
+            android:name=".sync.ReminderIntentService"
+            android:exported="true">
+
+        </service>
     </application>
 
 </manifest>

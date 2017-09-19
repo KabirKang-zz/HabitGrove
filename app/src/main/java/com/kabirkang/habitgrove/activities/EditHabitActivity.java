@@ -24,7 +24,8 @@ import com.kabirkang.habitgrove.models.HabitRecord;
 import com.kabirkang.habitgrove.models.ReminderTime;
 import com.kabirkang.habitgrove.models.ResetFrequency;
 import com.kabirkang.habitgrove.pickers.TimePickerFragment;
-import com.kabirkang.habitgrove.sync.FirebaseUtils;
+import com.kabirkang.habitgrove.sync.FirebaseSyncUtils;
+import com.kabirkang.habitgrove.utils.ReminderUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -206,7 +207,7 @@ public class EditHabitActivity extends AppCompatActivity implements TimePickerFr
     }
 
     private void createNew() {
-        FirebaseUtils.createNewHabitRecord(mEditingHabit.getRecord());
+        FirebaseSyncUtils.createNewHabitRecord(mEditingHabit.getRecord());
         onBackPressed();
     }
 
@@ -215,7 +216,8 @@ public class EditHabitActivity extends AppCompatActivity implements TimePickerFr
         data.putExtra(EDIT_HABIT_RESULT, mEditingHabit);
         setResult(RESULT_OK, data);
 
-        FirebaseUtils.applyChangesForHabit(mEditingHabit);
+        ReminderUtils.processOn(mEditingHabit, this);
+        FirebaseSyncUtils.applyChangesForHabit(mEditingHabit);
         finish();
     }
 

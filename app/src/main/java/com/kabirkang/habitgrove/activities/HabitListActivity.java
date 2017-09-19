@@ -26,7 +26,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.kabirkang.habitgrove.models.Habit;
 import com.kabirkang.habitgrove.models.HabitRecord;
-import com.kabirkang.habitgrove.sync.FirebaseUtils;
+import com.kabirkang.habitgrove.sync.FirebaseSyncUtils;
+import com.kabirkang.habitgrove.utils.ReminderUtils;
 import com.kabirkang.habitgrove.view.GridSpacing;
 import com.kabirkang.habitgrove.adapters.HabitsAdapter;
 import com.kabirkang.habitgrove.R;
@@ -194,8 +195,9 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
 
     private void onSignedInInitialize() {
         detachDBReadListener();
-        mUserHabitsQuery = FirebaseUtils.getCurrentUserHabitsQuery();
+        mUserHabitsQuery = FirebaseSyncUtils.getCurrentUserHabitsQuery();
         attachDatabaseReadListener();
+        // Keep Synced
     }
 
     private void onSignedOutCleanup() {
@@ -220,6 +222,7 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
                 }
                 hideProgressIndicator();
                 mHabitsAdapter.setHabits(habits);
+                ReminderUtils.processAll(habits, HabitListActivity.this);
             }
 
             @Override
