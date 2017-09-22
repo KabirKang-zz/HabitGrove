@@ -14,6 +14,7 @@
     <string name="edit_reminder_label">Reminder</string>
     <string name="edit_reset_label">Reset to zero</string>
     <string name="off">Off</string>
+    <string name="select">Select</string>
     <string name="color_picker_default_title">Change color</string>
     <string name="spinner_prompt">Reset to zero every</string>
 
@@ -30,5 +31,8 @@
     <string name="list_item_reset_today">Today</string>
     <string name="list_item_reset_frequency">This %1$s</string>
     <string name="list_item_reset_never">Since %1$s</string>
+
+    <string name="bt_increase_content_description">Increase score</string>
+    <string name="bt_decrease_content_description">Decrease score</string>
 
 </resources>

@@ -111,9 +111,9 @@ public class EditHabitActivity extends AppCompatActivity implements TimePickerFr
         updateTimeText();
 
         List<String> resetFrequencies = Arrays.asList(ResetFrequency.ALL);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,
+        ArrayAdapter<String> resetAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,
                 resetFrequencies);
-        resetFrequencySpinner.setAdapter(adapter);
+        resetFrequencySpinner.setAdapter(resetAdapter);
         resetFrequencySpinner.setPrompt(getResources().getString(R.string.spinner_prompt));
         String selection = (mOriginalHabit == null ? ResetFrequency.NEVER
                 : mOriginalHabit.getRecord().getResetFreq());
@@ -182,6 +182,14 @@ public class EditHabitActivity extends AppCompatActivity implements TimePickerFr
         mEditingHabit.getRecord().setReminderMin(minute);
         updateTimeText();
     }
+
+    @Override
+    public void onCancel() {
+        mEditingHabit.getRecord().setReminderHour(HabitRecord.REMINDER_OFF);
+        mEditingHabit.getRecord().setReminderMin(HabitRecord.REMINDER_OFF);
+        updateTimeText();
+    }
+
 
     private void updateTimeText() {
         if (mEditingHabit.isReminderOn()) {

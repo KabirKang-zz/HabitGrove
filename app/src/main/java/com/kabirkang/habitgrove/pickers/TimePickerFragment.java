@@ -2,6 +2,7 @@ package com.kabirkang.habitgrove.pickers;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,9 +12,11 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.TimePicker;
 
+import com.kabirkang.habitgrove.R;
+
 import java.util.Calendar;
 
-public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener, TimePickerDialog.OnCancelListener {
 
     public static final String HOUR_EXTRA_KEY = "hour";
     public static final String MINUTES_EXTRA_KEY = "minutes";
@@ -21,6 +24,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     private static final String TAG = "TimePickerFragment";
     public interface OnTimeSetListener {
         void onTimeSet(TimePicker view, int hourOfDay, int minute);
+        void onCancel();
     }
 
     private OnTimeSetListener mOnTimeSetListener;
@@ -56,8 +60,15 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return new TimePickerDialog(getActivity(), this, mHour, mMinutes,
+        TimePickerDialog dialog = new TimePickerDialog(getActivity(), this, mHour, mMinutes,
                 DateFormat.is24HourFormat(getActivity()));
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.off), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (mOnTimeSetListener != null) mOnTimeSetListener.onCancel();
+            }
+        });
+        return dialog;
     }
 
     @Override
