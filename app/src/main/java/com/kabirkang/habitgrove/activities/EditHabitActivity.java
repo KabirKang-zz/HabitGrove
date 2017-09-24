@@ -25,6 +25,7 @@ import com.kabirkang.habitgrove.models.ReminderTime;
 import com.kabirkang.habitgrove.models.ResetFrequency;
 import com.kabirkang.habitgrove.pickers.TimePickerFragment;
 import com.kabirkang.habitgrove.sync.FirebaseSyncUtils;
+import com.kabirkang.habitgrove.utils.HabitGroveScoreUtils;
 import com.kabirkang.habitgrove.utils.ReminderUtils;
 
 import java.util.Arrays;
@@ -225,6 +226,7 @@ public class EditHabitActivity extends AppCompatActivity implements TimePickerFr
         setResult(RESULT_OK, data);
 
         ReminderUtils.processOn(mEditingHabit, this);
+        HabitGroveScoreUtils.resetScore(mEditingHabit);
         FirebaseSyncUtils.applyChangesForHabit(mEditingHabit);
         finish();
     }

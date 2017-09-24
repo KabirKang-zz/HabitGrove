@@ -2,6 +2,7 @@ package com.kabirkang.habitgrove.view;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 
 import com.kabirkang.habitgrove.R;
 import com.kabirkang.habitgrove.models.Habit;
@@ -42,6 +43,15 @@ public class HabitListItem {
 
     public String getHabitName() {
         return mHabit.getRecord().getName();
+    }
+
+    public int getHabitNameTextColor() {
+        int color = mHabit.getRecord().getColor();
+        if (color == Color.WHITE) {
+            return mContext.getResources().getColor(R.color.text_primary);
+        } else {
+            return Color.WHITE;
+        }
     }
 
     public String getResetFreq() {

@@ -1,9 +1,11 @@
 package com.kabirkang.habitgrove.activities;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -11,7 +13,10 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.kabirkang.habitgrove.R;
+import com.kabirkang.habitgrove.graphs.GraphConfiguration;
+import com.kabirkang.habitgrove.graphs.GraphRange;
 import com.kabirkang.habitgrove.models.Habit;
 import com.kabirkang.habitgrove.sync.FirebaseSyncUtils;
 
@@ -26,10 +31,15 @@ public class HabitDetailActivity extends AppCompatActivity {
     private static final String TAG = "HabitDetailActivity";
     private static final int RC_EDIT_HABIT = 1991;
 
+    @BindView(R.id.bar_chart)
+    BarChart barChart;
+
     @BindView(R.id.tv_score)
     TextView scoreTextView;
 
     private Habit mHabit;
+    private GraphConfiguration mGraphConfiguration;
+    private GraphRange.DateRange mGraphRange = GraphRange.DateRange.WEEK;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +61,10 @@ public class HabitDetailActivity extends AppCompatActivity {
                 return true;
             case R.id.action_edit:
                 editHabit();
+                return true;
+            case R.id.action_delete:
+                delete();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -59,9 +73,8 @@ public class HabitDetailActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_EDIT_HABIT && resultCode == RESULT_OK) {
-            Habit changedHabit = data.getParcelableExtra(EditHabitActivity.EDIT_HABIT_RESULT);
-            Log.d(TAG, "Change: " + changedHabit);
-            Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show();
+            mHabit = data.getParcelableExtra(EditHabitActivity.EDIT_HABIT_RESULT);
+            updateUI();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -70,14 +83,21 @@ public class HabitDetailActivity extends AppCompatActivity {
     private void configure() {
         setContentView(R.layout.activity_habit_detail);
         ButterKnife.bind(this);
+        mGraphConfiguration = new GraphConfiguration(barChart);
 
         getHabit();
 
+        updateUI();
+
+    }
+
+    private void updateUI() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(mHabit.getRecord().getName());
         }
         updateScore();
+        mGraphConfiguration.setup(mHabit, mGraphRange);
     }
 
     private void getHabit() {
@@ -116,9 +136,24 @@ public class HabitDetailActivity extends AppCompatActivity {
 
     private void updateScoreIfNeeded(int oldValue) {
         if (oldValue != mHabit.getRecord().getScore()) {
-            updateScore();
+            updateUI();
             FirebaseSyncUtils.applyChangesForHabit(mHabit);
         }
+    }
+
+    private void delete() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.delete_button)
+                .setMessage(R.string.delete_message)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseSyncUtils.deleteHabit(mHabit);
+                        finish();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
     }
 
 }

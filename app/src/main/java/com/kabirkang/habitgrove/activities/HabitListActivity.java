@@ -25,9 +25,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.kabirkang.habitgrove.models.Habit;
+import com.kabirkang.habitgrove.models.HabitList;
 import com.kabirkang.habitgrove.models.HabitRecord;
 import com.kabirkang.habitgrove.sync.FirebaseSyncUtils;
+import com.kabirkang.habitgrove.utils.HabitGroveScoreUtils;
 import com.kabirkang.habitgrove.utils.ReminderUtils;
+import com.kabirkang.habitgrove.utils.SharedPreferencesUtils;
 import com.kabirkang.habitgrove.view.GridSpacing;
 import com.kabirkang.habitgrove.adapters.HabitsAdapter;
 import com.kabirkang.habitgrove.R;
@@ -79,7 +82,9 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
 
         initializeFirebase();
 
-        mHabitsAdapter = new HabitsAdapter();
+        HabitList.SortOrder sortOrder = SharedPreferencesUtils.getSortOrder(this);
+        HabitList habitList = new HabitList(new ArrayList<Habit>(), sortOrder);
+        mHabitsAdapter = new HabitsAdapter(habitList);
         mHabitsAdapter.setClickListener(this);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, NUM_OF_COLUMNS));
         mRecyclerView.addItemDecoration(new GridSpacing(NUM_OF_COLUMNS,
@@ -125,7 +130,6 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
         detachDBReadListener();
-        mHabitsAdapter.clear();
     }
 
     @Override
@@ -139,6 +143,12 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
         switch (item.getItemId()) {
             case R.id.sign_out_button:
                 signOut();
+                return true;
+            case R.id.sort_by_name_button:
+                sortBy(HabitList.SortOrder.NAME);
+                return true;
+            case R.id.sort_by_created_date_button:
+                sortBy(HabitList.SortOrder.DATE);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -178,6 +188,11 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
         };
     }
 
+    private void sortBy(HabitList.SortOrder sortOrder) {
+        SharedPreferencesUtils.setSortOrder(this, sortOrder);
+        mHabitsAdapter.setSortOrder(sortOrder);
+    }
+
     private void signOut() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.sign_out)
@@ -212,16 +227,8 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
         mValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Habit> habits = new ArrayList<>((int) dataSnapshot.getChildrenCount());
-
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    HabitRecord parsedRecord = data.getValue(HabitRecord.class);
-                    habits.add(new Habit(data.getKey(), parsedRecord));
-
-                }
                 hideProgressIndicator();
-                mHabitsAdapter.setHabits(habits);
-                ReminderUtils.processAll(habits, HabitListActivity.this);
+                processOnDataChange(dataSnapshot);
             }
 
             @Override
@@ -242,14 +249,17 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
         mUserHabitsQuery = null;
     }
 
-    private void showProgressIndicator() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
+    private void processOnDataChange(DataSnapshot dataSnapshot) {
+        List<Habit> habits = new ArrayList<>((int) dataSnapshot.getChildrenCount());
+        for (DataSnapshot data : dataSnapshot.getChildren()) {
+            HabitRecord parsedRecord = data.getValue(HabitRecord.class);
+            habits.add(new Habit(data.getKey(), parsedRecord));
+        }
+        mHabitsAdapter.setHabits(habits);
 
-    private void hideProgressIndicator() {
-        progressBar.setVisibility(View.INVISIBLE);
+        HabitGroveScoreUtils.processAll(habits);
+        ReminderUtils.processAll(habits, this);
     }
-
     private void showDetail(Habit habit) {
         Intent intent = new Intent(this, HabitDetailActivity.class);
         intent.putExtra(HabitDetailActivity.HABIT_EXTRA_KEY, habit);
@@ -261,5 +271,14 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
             startActivity(new Intent(this, EditHabitActivity.class));
         }
     }
+
+    private void showProgressIndicator() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressIndicator() {
+        progressBar.setVisibility(View.INVISIBLE);
+    }
+
 
 }
