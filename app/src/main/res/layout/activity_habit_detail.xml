@@ -6,11 +6,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.kabirkang.habitgrove.activities.HabitDetailActivity">
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/sp_date_range"
+        style="@style/BarChartDateSpinner" />
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/bar_chart"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2" />
+        style="@style/BarChart" />
     <LinearLayout style="@style/FormScore">
 
         <ImageButton

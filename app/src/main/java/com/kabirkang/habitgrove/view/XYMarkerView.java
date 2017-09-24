@@ -1,4 +1,4 @@
-package com.kabirkang.habitgrove.graphs;
+package com.kabirkang.habitgrove.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

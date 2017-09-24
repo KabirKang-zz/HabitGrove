@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.kabirkang.habitgrove.R;
@@ -20,11 +22,13 @@ import com.kabirkang.habitgrove.graphs.GraphRange;
 import com.kabirkang.habitgrove.models.Habit;
 import com.kabirkang.habitgrove.sync.FirebaseSyncUtils;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class HabitDetailActivity extends AppCompatActivity {
+public class HabitDetailActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static final String HABIT_EXTRA_KEY = "com.kabirkang.habitgrove.activities.habit";
 
@@ -36,6 +40,9 @@ public class HabitDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.tv_score)
     TextView scoreTextView;
+
+    @BindView(R.id.sp_date_range)
+    Spinner dateRangeSpinner;
 
     private Habit mHabit;
     private GraphConfiguration mGraphConfiguration;
@@ -86,7 +93,7 @@ public class HabitDetailActivity extends AppCompatActivity {
         mGraphConfiguration = new GraphConfiguration(barChart);
 
         getHabit();
-
+        configureDateSpinner();
         updateUI();
 
     }
@@ -154,6 +161,28 @@ public class HabitDetailActivity extends AppCompatActivity {
                 })
                 .setNegativeButton(android.R.string.no, null)
                 .show();
+    }
+
+    private void configureDateSpinner() {
+        List<String> dateRanges = GraphRange.allStringValues(this);
+        ArrayAdapter<String> resetAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,
+                dateRanges);
+        dateRangeSpinner.setAdapter(resetAdapter);
+        dateRangeSpinner.setSelection(dateRanges.indexOf(mGraphRange.stringValue(this)));
+        dateRangeSpinner.setOnItemSelectedListener(this);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String selected = parent.getItemAtPosition(position).toString();
+        if (!selected.equals(mGraphRange.stringValue(this))) {
+            mGraphRange = GraphRange.DateRange.fromString(selected, this);
+            updateUI();
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
     }
 
 }

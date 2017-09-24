@@ -19,7 +19,7 @@ public class WeekDayAxisValueFormatter implements IAxisValueFormatter {
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(HabitGroveDateUtils.getStartOfThisWeek());
+        calendar.setTimeInMillis(HabitGroveDateUtils.getStartOfCurrentWeek());
         calendar.add(Calendar.DATE, (int) value);
         return FORMATTER.format(calendar.getTime());
     }

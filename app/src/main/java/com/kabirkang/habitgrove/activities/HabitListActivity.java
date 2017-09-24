@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -54,6 +55,10 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
 
     @BindView(R.id.recycler_habits)
     RecyclerView mRecyclerView;
+
+    @BindView(R.id.blank_view)
+    TextView blankView;
+
     @BindView(R.id.fab)
     FloatingActionButton floatingActionButton;
 
@@ -215,6 +220,7 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
     }
 
     private void onSignedOutCleanup() {
+        ReminderUtils.cancelAll(mHabitsAdapter.getHabits(), this);
         mHabitsAdapter.clear();
         detachDBReadListener();
     }

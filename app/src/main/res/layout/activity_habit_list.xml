@@ -42,7 +42,12 @@
         android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_gravity="center"
-        android:visibility="invisible"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/empty_view"
+        style="@style/BlankView"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         tools:visibility="visible" />
