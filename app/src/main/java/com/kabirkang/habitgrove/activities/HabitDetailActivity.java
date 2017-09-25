@@ -4,6 +4,8 @@ package com.kabirkang.habitgrove.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,9 +20,13 @@ import android.widget.TextView;
 import com.github.mikephil.charting.charts.BarChart;
 import com.kabirkang.habitgrove.R;
 import com.kabirkang.habitgrove.graphs.GraphConfiguration;
+import com.kabirkang.habitgrove.graphs.GraphDataLoader;
+import com.kabirkang.habitgrove.graphs.GraphDataSource;
 import com.kabirkang.habitgrove.graphs.GraphRange;
 import com.kabirkang.habitgrove.models.Habit;
 import com.kabirkang.habitgrove.sync.FirebaseSyncUtils;
+import com.kabirkang.habitgrove.view.DetailView;
+import com.kabirkang.habitgrove.view.GraphView;
 
 import java.util.List;
 
@@ -28,11 +34,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class HabitDetailActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class HabitDetailActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
+        LoaderManager.LoaderCallbacks<GraphDataSource> {
 
     public static final String HABIT_EXTRA_KEY = "com.kabirkang.habitgrove.activities.habit";
 
     private static final String TAG = "HabitDetailActivity";
+    private static final int GRAPH_DATA_SOURCE_LOADER = 1;
     private static final int RC_EDIT_HABIT = 1991;
 
     @BindView(R.id.bar_chart)
@@ -44,9 +52,15 @@ public class HabitDetailActivity extends AppCompatActivity implements AdapterVie
     @BindView(R.id.sp_date_range)
     Spinner dateRangeSpinner;
 
+    @BindView(R.id.tv_date_range)
+    TextView dateRangeTextView;
+
+
     private Habit mHabit;
     private GraphConfiguration mGraphConfiguration;
     private GraphRange.DateRange mGraphRange = GraphRange.DateRange.WEEK;
+
+    private DetailView mView = new DetailView();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +117,11 @@ public class HabitDetailActivity extends AppCompatActivity implements AdapterVie
         if (actionBar != null) {
             actionBar.setTitle(mHabit.getRecord().getName());
         }
-        updateScore();
-        mGraphConfiguration.setup(mHabit, mGraphRange);
+        String scoreString = mView.getScoreString(mHabit.getRecord().getScore());
+        scoreTextView.setText(scoreString);
+
+        dateRangeTextView.setText(mView.getDateRangeString());
+        getSupportLoaderManager().restartLoader(GRAPH_DATA_SOURCE_LOADER, null, this);
     }
 
     private void getHabit() {
@@ -120,11 +137,6 @@ public class HabitDetailActivity extends AppCompatActivity implements AdapterVie
         Intent intent = new Intent(this, EditHabitActivity.class);
         intent.putExtra(EditHabitActivity.EDIT_HABIT_EXTRA_KEY, mHabit);
         startActivityForResult(intent, RC_EDIT_HABIT);
-    }
-
-    private void updateScore() {
-        String scoreString = String.valueOf(mHabit.getRecord().getScore());
-        scoreTextView.setText(scoreString);
     }
 
     @OnClick(R.id.bt_increase)
@@ -177,12 +189,31 @@ public class HabitDetailActivity extends AppCompatActivity implements AdapterVie
         String selected = parent.getItemAtPosition(position).toString();
         if (!selected.equals(mGraphRange.stringValue(this))) {
             mGraphRange = GraphRange.DateRange.fromString(selected, this);
+            mView.setDateRange(mGraphRange);
             updateUI();
         }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+    }
+
+    @Override
+    public Loader<GraphDataSource> onCreateLoader(int id, Bundle args) {
+        return new GraphDataLoader(this, mHabit, mGraphRange);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<GraphDataSource> loader,
+                               GraphDataSource dataSource) {
+        GraphView view = new GraphView(mHabit, mGraphRange);
+        mGraphConfiguration.setup(dataSource, view);
+        barChart.animateY(1000);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<GraphDataSource> loader) {
+        barChart.clear();
     }
 
 }

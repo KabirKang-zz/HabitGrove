@@ -12,7 +12,10 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.kabirkang.habitgrove.graphs.formatters.BaseAxisValueFormatter;
+import com.kabirkang.habitgrove.graphs.formatters.GraphValueFormatter;
 import com.kabirkang.habitgrove.graphs.formatters.MonthAxisValueFormatter;
+import com.kabirkang.habitgrove.graphs.formatters.WeekDayAxisValueFormatter;
 import com.kabirkang.habitgrove.graphs.formatters.YearAxisValueFormatter;
 import com.kabirkang.habitgrove.models.Habit;
 import com.kabirkang.habitgrove.view.GraphView;
@@ -26,28 +29,19 @@ public final class GraphConfiguration {
     private static final int MAX_VISIBLE_VALUE_COUNT = 60;
 
     private BarChart mBarChart;
-    private IAxisValueFormatter mXAxisFormatter;
-
-    private Habit mHabit;
-    private GraphRange.DateRange mDateRange;
+    private BaseAxisValueFormatter mXAxisFormatter;
 
     private GraphDataSource mDataSource;
-    private GraphView mViewModel;
+    private GraphView mView;
 
     public GraphConfiguration(BarChart barChart) {
         this.mBarChart = barChart;
     }
 
-    public void setup(@NonNull final Habit habit, GraphRange.DateRange dateRange) {
-        this.mHabit = habit;
-        this.mDateRange = dateRange;
-        this.mViewModel = new GraphView(habit, dateRange);
-        this.mDataSource = new GraphDataSource(habit, dateRange, new GraphDataSource.Delegate() {
-            @Override
-            public int numberOfEntries() {
-                return mViewModel.getXAxisLabelCount();
-            }
-        });
+    public void setup(@NonNull final GraphDataSource dataSource,
+                      @NonNull final GraphView view) {
+        this.mDataSource = dataSource;
+        this.mView = view;
         configureBarChart();
         setData();
     }
@@ -69,23 +63,13 @@ public final class GraphConfiguration {
     }
 
     private void configureXAxis() {
-        switch (mDateRange) {
-            case WEEK:
-                mXAxisFormatter = new WeekDayAxisValueFormatter();
-                break;
-            case MONTH:
-                mXAxisFormatter = new MonthAxisValueFormatter();
-                break;
-            case YEAR:
-                mXAxisFormatter = new YearAxisValueFormatter();
-                break;
-        }
+        mXAxisFormatter = mView.getXAxisFormatter();
 
         XAxis xAxis = mBarChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f);
-        xAxis.setLabelCount(mViewModel.getXAxisLabelCount());
+        xAxis.setLabelCount(mDataSource.getNumberOfEntries());
         xAxis.setValueFormatter(mXAxisFormatter);
     }
 
@@ -120,23 +104,27 @@ public final class GraphConfiguration {
     }
 
     private void setData() {
-        List<BarEntry> yValues = mDataSource.buildData();
+        List<BarEntry> yValues = mDataSource.getData();
         final int labelCount = ((int) Math.floor(mDataSource.getMaxValue() / 2)) + 1;
 
         YAxis leftAxis = mBarChart.getAxisLeft();
         leftAxis.setLabelCount(labelCount, false);
+
+        final String setName = mView.getBarDataSetName(mBarChart.getContext());
 
         BarDataSet barDataSet;
         if (mBarChart.getData() != null &&
                 mBarChart.getData().getDataSetCount() > 0) {
             barDataSet = (BarDataSet) mBarChart.getData().getDataSetByIndex(0);
             barDataSet.setValues(yValues);
+            barDataSet.setLabel(setName);
             mBarChart.getData().notifyDataChanged();
             mBarChart.notifyDataSetChanged();
             mBarChart.invalidate();
         } else {
-            barDataSet = new BarDataSet(yValues, mViewModel.getBarDataSetName());
+            barDataSet = new BarDataSet(yValues, setName);
             barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+            barDataSet.setValueFormatter(new GraphValueFormatter());
 
             ArrayList<IBarDataSet> dataSets = new ArrayList<>();
             dataSets.add(barDataSet);

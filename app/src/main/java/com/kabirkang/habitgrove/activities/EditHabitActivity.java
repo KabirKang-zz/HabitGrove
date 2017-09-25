@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kabirkang.habitgrove.R;
+import com.kabirkang.habitgrove.analytics.HabitGroveAnalytics;
 import com.kabirkang.habitgrove.models.Habit;
 import com.kabirkang.habitgrove.models.HabitRecord;
 import com.kabirkang.habitgrove.models.ReminderTime;
@@ -216,6 +217,7 @@ public class EditHabitActivity extends AppCompatActivity implements TimePickerFr
     }
 
     private void createNew() {
+        HabitGroveAnalytics.logCreateHabitWithName(mEditingHabit.getRecord().getName());
         FirebaseSyncUtils.createNewHabitRecord(mEditingHabit.getRecord());
         onBackPressed();
     }

@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +63,7 @@ public final class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.Habi
     }
 
     public void setClickListener(HabitAdapterOnClickListener onClickListener) {
+        Log.d("SET ON CLIKC", onClickListener.toString());
         this.mClickListener = onClickListener;
     }
 
@@ -109,6 +111,7 @@ public final class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.Habi
         HabitAdapterViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
             mViewModel = new HabitListItem(itemView.getContext());
         }
 

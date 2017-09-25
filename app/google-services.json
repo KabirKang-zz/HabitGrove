@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "691811125528",
-    "firebase_url": "https://habitgrove.firebaseio.com",
-    "project_id": "habitgrove",
-    "storage_bucket": "habitgrove.appspot.com"
+    "project_number": "424348619020",
+    "firebase_url": "https://habitgrove-1.firebaseio.com",
+    "project_id": "habitgrove-1",
+    "storage_bucket": "habitgrove-1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:691811125528:android:8a0c0a271d92cb22",
+        "mobilesdk_app_id": "1:424348619020:android:8a0c0a271d92cb22",
         "android_client_info": {
           "package_name": "com.kabirkang.habitgrove"
         }
       },
       "oauth_client": [
         {
-          "client_id": "691811125528-cgmsth548dcmtsfalsml8bhlti50q03m.apps.googleusercontent.com",
+          "client_id": "424348619020-fbskpps5rft7b8qq860mpbtvd5uklsqv.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAuR5MCZb_At_B-blf87A3ljALrKbTqnl4"
+          "current_key": "AIzaSyCKKCJa3cOCJ5lhtvSUkejOEpu9bB6UsOU"
         }
       ],
       "services": {

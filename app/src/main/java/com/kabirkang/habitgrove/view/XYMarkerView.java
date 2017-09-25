@@ -10,6 +10,10 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.kabirkang.habitgrove.R;
+import com.kabirkang.habitgrove.graphs.formatters.BaseAxisValueFormatter;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 /**
  * Created by kabirkang on 9/24/17.
@@ -18,10 +22,12 @@ import com.kabirkang.habitgrove.R;
 @SuppressLint("ViewConstructor")
 public class XYMarkerView extends MarkerView {
 
-    private TextView mContentTextView;
-    private IAxisValueFormatter mXAxisValueFormatter;
+    private static SimpleDateFormat FORMATTER = new SimpleDateFormat("EEE, MMM d", Locale.getDefault());
 
-    public XYMarkerView(Context context, IAxisValueFormatter xAxisValueFormatter) {
+    private TextView mContentTextView;
+    private BaseAxisValueFormatter mXAxisValueFormatter;
+
+    public XYMarkerView(Context context, BaseAxisValueFormatter xAxisValueFormatter) {
         super(context, R.layout.marker_view);
 
         this.mXAxisValueFormatter = xAxisValueFormatter;
@@ -32,9 +38,8 @@ public class XYMarkerView extends MarkerView {
     // content (user-interface)
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
-        String xAxisString = mXAxisValueFormatter.getFormattedValue(e.getX(), null);
-        String xAxisStringCap = xAxisString.substring(0, 1).toUpperCase() + xAxisString.substring(1);
-        mContentTextView.setText(xAxisStringCap + ", " + String.valueOf((int) e.getY()));
+        long date = mXAxisValueFormatter.getDateForValue(e.getX());
+        mContentTextView.setText(FORMATTER.format(date) + ". " + String.valueOf((int) e.getY()));
         super.refreshContent(e, highlight);
     }
 

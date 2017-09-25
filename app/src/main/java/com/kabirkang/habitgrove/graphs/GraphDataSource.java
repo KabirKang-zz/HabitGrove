@@ -8,6 +8,7 @@ import com.kabirkang.habitgrove.utils.HabitGroveDateUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,47 +16,61 @@ import java.util.List;
  */
 
 public class GraphDataSource {
-    public interface Delegate {
-        int numberOfEntries();
-    }
 
     private Habit mHabit;
     private GraphRange.DateRange mDateRange;
-    private Delegate mDelegate;
+    private List<BarEntry> mEntries;
     private int mMaxValue = 0;
 
-    public GraphDataSource(@NonNull Habit habit, @NonNull GraphRange.DateRange dateRange,
-                           @NonNull Delegate delegate) {
+    public GraphDataSource(@NonNull Habit habit,
+                                    @NonNull GraphRange.DateRange dateRange) {
         this.mHabit = habit;
         this.mDateRange = dateRange;
-        this.mDelegate = delegate;
     }
 
-    /**
-     * @return Max value within a given range (e.g. max value between days, weeks of months).
-     */
+    public void prefetch() {
+        buildData();
+    }
+
     public int getMaxValue() {
         return mMaxValue;
     }
 
-    public List<BarEntry> buildData() {
-        ArrayList<BarEntry> entries = new ArrayList<>();
+    public List<BarEntry> getData() {
+        if (mEntries == null) {
+            buildData();
+        }
+        return mEntries;
+    }
+
+    public int getNumberOfEntries() {
+        switch (mDateRange) {
+            case WEEK:
+                return 7;
+            case MONTH:
+                return HabitGroveDateUtils.getNumberOfWeeksInCurrentMonth();
+            case YEAR:
+                return 12;
+            default:
+                throw new IllegalArgumentException("Receive illegal date range");
+        }
+    }
+
+    private void buildData() {
+        mEntries = new ArrayList<>();
         long baseDate = getBaseDate();
         mMaxValue = 0;
 
-        for (int i = 0; i < mDelegate.numberOfEntries(); i++) {
+        for (int i = 0; i < getNumberOfEntries(); i++) {
             long currentDate = getDateForEntryAtIndex(baseDate, i);
 
             int countInRange = 0;
             for (long checkmarkDate : mHabit.getRecord().getCheckmarks()) {
                 if (isMeetCompareRule(currentDate, checkmarkDate)) countInRange++;
             }
-            entries.add(new BarEntry(i, countInRange));
-
+            mEntries.add(new BarEntry(i, countInRange));
             if (countInRange > mMaxValue) mMaxValue = countInRange;
         }
-
-        return entries;
     }
 
     private long getBaseDate() {
@@ -78,7 +93,10 @@ public class GraphDataSource {
                 calendar.add(Calendar.DATE, index);
                 break;
             case MONTH:
-                calendar.add(Calendar.DAY_OF_WEEK_IN_MONTH, index);
+                Date endOfMonth = new Date(HabitGroveDateUtils.getEndOfCurrentMonth());
+                if (calendar.getTime().after(endOfMonth)) {
+                    return endOfMonth.getTime();
+                }
                 break;
             case YEAR:
                 calendar.add(Calendar.MONTH, index);
@@ -94,7 +112,8 @@ public class GraphDataSource {
             case WEEK:
                 return HabitGroveDateUtils.isSameDay(currentDate, checkmarkDate);
             case MONTH:
-                return HabitGroveDateUtils.isDatesInSameWeek(currentDate, checkmarkDate);
+                return HabitGroveDateUtils.isDatesInSameMonth(currentDate, checkmarkDate)
+                        && HabitGroveDateUtils.isDatesInSameWeek(currentDate, checkmarkDate);
             case YEAR:
                 return HabitGroveDateUtils.isDatesInSameMonth(currentDate, checkmarkDate);
             default:

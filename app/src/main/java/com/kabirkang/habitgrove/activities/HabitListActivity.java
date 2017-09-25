@@ -25,6 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.kabirkang.habitgrove.analytics.HabitGroveAnalytics;
 import com.kabirkang.habitgrove.models.Habit;
 import com.kabirkang.habitgrove.models.HabitList;
 import com.kabirkang.habitgrove.models.HabitRecord;
@@ -162,6 +163,7 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
 
     @Override
     public void onClick(Habit habit, int position) {
+        Log.d("TAGGGGGGG", habit.toString());
         showDetail(habit);
     }
 
@@ -214,6 +216,7 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
 
     private void onSignedInInitialize() {
         detachDBReadListener();
+        HabitGroveAnalytics.logLogin(FirebaseAuth.getInstance().getCurrentUser());
         mUserHabitsQuery = FirebaseSyncUtils.getCurrentUserHabitsQuery();
         attachDatabaseReadListener();
         // Keep Synced
@@ -267,6 +270,7 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
         ReminderUtils.processAll(habits, this);
     }
     private void showDetail(Habit habit) {
+        HabitGroveAnalytics.logViewHabitListItem(habit);
         Intent intent = new Intent(this, HabitDetailActivity.class);
         intent.putExtra(HabitDetailActivity.HABIT_EXTRA_KEY, habit);
         startActivity(intent);

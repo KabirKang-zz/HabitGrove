@@ -1,8 +1,18 @@
 package com.kabirkang.habitgrove.view;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
+
+import com.kabirkang.habitgrove.R;
 import com.kabirkang.habitgrove.graphs.GraphRange;
+import com.kabirkang.habitgrove.graphs.formatters.BaseAxisValueFormatter;
+import com.kabirkang.habitgrove.graphs.formatters.MonthAxisValueFormatter;
+import com.kabirkang.habitgrove.graphs.formatters.WeekDayAxisValueFormatter;
+import com.kabirkang.habitgrove.graphs.formatters.YearAxisValueFormatter;
 import com.kabirkang.habitgrove.models.Habit;
 import com.kabirkang.habitgrove.utils.HabitGroveDateUtils;
+import com.kabirkang.habitgrove.utils.HabitGroveStringUtils;
 
 public class GraphView {
 
@@ -14,30 +24,36 @@ public class GraphView {
         this.mDateRange = dateRange;
     }
 
-    public int getXAxisLabelCount() {
+    public BaseAxisValueFormatter getXAxisFormatter() {
         switch (mDateRange) {
             case WEEK:
-                return 7;
+                return new WeekDayAxisValueFormatter();
             case MONTH:
-                return HabitGroveDateUtils.getNumberOfWeeksInCurrentMonth();
+                return new MonthAxisValueFormatter();
             case YEAR:
-                return 12;
+                return new YearAxisValueFormatter();
+            default:
+                throw new IllegalArgumentException("Invalid date range");
+        }
+    }
+
+    public String getBarDataSetName(@NonNull final Context context) {
+        Resources resources = context.getResources();
+        switch (mDateRange) {
+            case WEEK:
+                String week = resources.getString(R.string.week).toLowerCase();
+                return HabitGroveStringUtils.capitalized(
+                        resources.getString(R.string.bar_chart_set_name, week));
+            case MONTH:
+                String month = resources.getString(R.string.month).toLowerCase();
+                return HabitGroveStringUtils.capitalized(
+                        resources.getString(R.string.bar_chart_set_name, month));
+            case YEAR:
+                String year = resources.getString(R.string.year).toLowerCase();
+                return HabitGroveStringUtils.capitalized(
+                        resources.getString(R.string.bar_chart_set_name, year));
             default:
                 throw new IllegalArgumentException("Receive illegal date range");
         }
     }
-
-    public String getBarDataSetName() {
-        switch (mDateRange) {
-            case WEEK:
-                return "This week";
-            case MONTH:
-                return "This month";
-            case YEAR:
-                return "This year";
-            default:
-                throw new IllegalArgumentException("Receive illegal date range");
-        }
-    }
-
 }
