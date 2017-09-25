@@ -26,7 +26,7 @@ public class DetailWidgetProvider extends AppWidgetProvider {
     // String to be sent on Broadcast as soon as Data is Fetched
     // should be included on WidgetProvider manifest intent action
     // to be recognized by this WidgetProvider to receive broadcast
-    public static final String DATA_FETCHED = "com.ivanmagda.habito.DATA_FETCHED";
+    public static final String DATA_FETCHED = "com.kabirkang.habitgrove.DATA_FETCHED";
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {

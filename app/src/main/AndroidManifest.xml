@@ -52,7 +52,7 @@
             android:label="@string/title_widget_detail">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.ivanmagda.habito.DATA_FETCHED" />
+                <action android:name="com.kabirkang.habitgrove.DATA_FETCHED" />
             </intent-filter>
 
             <meta-data

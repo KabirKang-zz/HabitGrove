@@ -39,8 +39,8 @@ import petrov.kristiyan.colorpicker.ColorPicker;
 
 public class EditHabitActivity extends AppCompatActivity implements TimePickerFragment.OnTimeSetListener {
 
-    public static final String EDIT_HABIT_RESULT = "com.ivanmagda.habito.activities.edit_result";
-    public static final String EDIT_HABIT_EXTRA_KEY = "com.ivanmagda.habito.activities.edit";
+    public static final String EDIT_HABIT_RESULT = "com.kabirkang.habitgrove.activities.edit_result";
+    public static final String EDIT_HABIT_EXTRA_KEY = "com.kabirkang.habitgrove.activities.edit";
 
     private static final String TAG = "EditHabitActivity";
 
