@@ -163,7 +163,6 @@ public class HabitListActivity extends AppCompatActivity implements HabitsAdapte
 
     @Override
     public void onClick(Habit habit, int position) {
-        Log.d("TAGGGGGGG", habit.toString());
         showDetail(habit);
     }
 

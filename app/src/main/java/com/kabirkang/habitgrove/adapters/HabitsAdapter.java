@@ -63,7 +63,6 @@ public final class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.Habi
     }
 
     public void setClickListener(HabitAdapterOnClickListener onClickListener) {
-        Log.d("SET ON CLIKC", onClickListener.toString());
         this.mClickListener = onClickListener;
     }
 

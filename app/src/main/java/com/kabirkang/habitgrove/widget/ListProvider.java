@@ -39,7 +39,6 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
         } else {
             mHabitList = new ArrayList<>();
         }
-        Log.d("ListProvider", mHabitList.toString());
     }
 
     @Override
