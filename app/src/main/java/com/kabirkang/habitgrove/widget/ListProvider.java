@@ -3,6 +3,7 @@ package com.kabirkang.habitgrove.widget;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -38,6 +39,7 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
         } else {
             mHabitList = new ArrayList<>();
         }
+        Log.d("ListProvider", mHabitList.toString());
     }
 
     @Override

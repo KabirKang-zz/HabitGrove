@@ -43,9 +43,7 @@
 
         <service
             android:name=".sync.ReminderIntentService"
-            android:exported="true">
-
-        </service>
+            android:exported="true" />
         <receiver
             android:name=".widget.DetailWidgetProvider"
             android:enabled="true"

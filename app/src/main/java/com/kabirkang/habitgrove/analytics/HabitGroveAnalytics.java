@@ -16,7 +16,6 @@ public class HabitGroveAnalytics {
     private static FirebaseAnalytics firebaseAnalytics;
 
     public static void initAnalytics(Context context) {
-        // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = FirebaseAnalytics.getInstance(context);
     }
 

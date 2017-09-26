@@ -34,8 +34,6 @@ public class XYMarkerView extends MarkerView {
         this.mContentTextView = (TextView) findViewById(R.id.tvContent);
     }
 
-    // Callbacks everytime the MarkerView is redrawn, can be used to update the
-    // content (user-interface)
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
         long date = mXAxisValueFormatter.getDateForValue(e.getX());

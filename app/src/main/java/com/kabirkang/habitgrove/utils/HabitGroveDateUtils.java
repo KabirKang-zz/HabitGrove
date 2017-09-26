@@ -99,7 +99,6 @@ public final class HabitGroveDateUtils {
         calendar.clear(Calendar.SECOND);
         calendar.clear(Calendar.MILLISECOND);
 
-        // get start of this week in milliseconds
         calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
 
         return calendar.getTimeInMillis();

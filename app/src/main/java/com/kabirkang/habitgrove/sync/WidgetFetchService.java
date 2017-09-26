@@ -4,6 +4,7 @@ import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -69,18 +70,12 @@ public class WidgetFetchService extends Service {
         populateWidget();
     }
 
-    /**
-     * Method which sends broadcast to WidgetProvider
-     * so that widget is notified to do necessary action
-     * and here action == DetailWidgetProvider.DATA_FETCHED
-     */
     private void populateWidget() {
         Intent widgetUpdateIntent = new Intent();
         widgetUpdateIntent.setAction(DetailWidgetProvider.DATA_FETCHED);
         widgetUpdateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 appWidgetId);
         sendBroadcast(widgetUpdateIntent);
-
         this.stopSelf();
     }
 }

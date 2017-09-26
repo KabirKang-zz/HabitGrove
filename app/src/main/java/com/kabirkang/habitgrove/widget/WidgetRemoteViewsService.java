@@ -2,6 +2,7 @@ package com.kabirkang.habitgrove.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.RemoteViewsService;
 
 /**
@@ -9,7 +10,7 @@ import android.widget.RemoteViewsService;
  */
 
 public class WidgetRemoteViewsService extends RemoteViewsService {
-    private static final String TAG = "DetailWidgetRemoteViews";
+    private static final String TAG = "WidgetRemoteViews";
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {

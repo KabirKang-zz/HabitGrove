@@ -56,10 +56,6 @@ public class EditHabitActivity extends AppCompatActivity implements TimePickerFr
     @BindView(R.id.tv_reminder_time)
     TextView reminderTimeTextView;
 
-    /**
-     * The original habit.
-     * If original habit is not null, then we are in editing mode, otherwise creating new.
-     */
     private Habit mOriginalHabit;
     private Habit mEditingHabit;
 

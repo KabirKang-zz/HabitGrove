@@ -106,13 +106,13 @@ public final class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.Habi
         @BindView(R.id.list_item_count)
         TextView countTextView;
 
-        private HabitListItem mViewModel;
+        private HabitListItem mView;
 
         HabitAdapterViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
-            mViewModel = new HabitListItem(itemView.getContext());
+            mView = new HabitListItem(itemView.getContext());
         }
 
         @Override
@@ -125,16 +125,17 @@ public final class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.Habi
         }
 
         private void bindAtPosition(int position) {
-            mViewModel.setHabit(mHabitList.getHabits().get(position));
+            mView.setHabit(mHabitList.getHabits().get(position));
 
             if (itemView instanceof CardView) {
-                ((CardView) itemView).setCardBackgroundColor(mViewModel.getBackgroundColor());
+                ((CardView) itemView).setCardBackgroundColor(mView.getBackgroundColor());
             } else {
-                itemView.setBackgroundColor(mViewModel.getBackgroundColor());
+                itemView.setBackgroundColor(mView.getBackgroundColor());
             }
-            nameTextView.setTextColor(mViewModel.getHabitNameTextColor());
-            resetPeriodTextView.setText(mViewModel.getResetFreq());
-            countTextView.setText(mViewModel.getScore());
+            nameTextView.setText(mView.getHabitName());
+            nameTextView.setTextColor(mView.getHabitNameTextColor());
+            resetPeriodTextView.setText(mView.getResetFreq());
+            countTextView.setText(mView.getScore());
         }
     }
 
